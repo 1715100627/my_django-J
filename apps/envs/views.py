@@ -18,26 +18,29 @@ class EnvsViewSet(viewsets.ModelViewSet):
     # 指定权限类
     permission_classes = [permissions.IsAuthenticated]
 
-
     def perform_destroy(self, instance):
         instance.is_delete = True
         instance.save()  # 逻辑删除
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        # queryset = self.filter_queryset(self.get_queryset())
+        #
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.get_serializer(page, many=True)
+        #     datas = serializer.data
+        #     datas = get_paginated_response(datas)
+        #     return self.get_paginated_response(serializer.data)
+        #
+        # serializer = self.get_serializer(queryset, many=True)
+        # return Response(serializer.data)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            datas = serializer.data
-            datas = get_paginated_response(datas)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        response = super().list(request, *args, **kwargs)
+        response['results'] = get_paginated_response(response.data['results'])
+        return response
 
     @action(methods=['get'], detail=False)
-    def names(self,request, pk=None):
+    def names(self, request, pk=None):
         queryset = self.get_queryset()
         serializer = self.get_serializer(instance=queryset, many=True)
         return Response(serializer.data)

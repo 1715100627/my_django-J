@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('projects.urls')),
     path('', include('envs.urls')),
     path('', include('interfaces.urls')),
+    path('',include('debugtalks.urls')),
     path('docs/', include_docs_urls(title='接口文档',
                                     description='接口自动化测试平台')),
     path('api/', include('rest_framework.urls')),
